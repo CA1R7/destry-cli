@@ -45,7 +45,7 @@ export const PreviewStartQuestions = (): Promise<OptionsType> => {
           {
             type: "number",
             name: "max_checks",
-            message: "How many checks you want ? (100 checks)",
+            message: "How many checks you want (0 infinity) ? (100 checks)",
             default() {
               return 100;
             },
