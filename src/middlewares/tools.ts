@@ -16,9 +16,9 @@ export const ToolStartManager = ({ options, proxieshandler }: ToolManagerType): 
 
   const requestLoop = setInterval(() => {
     try {
-      if (options.max_checks <= i) {
+      if (options.max_checks && options.max_checks <= i) {
         clearInterval(requestLoop);
-        console.log(`Done ${Date.now() - started_stamp}ms`);
+        console.log(`Checking Done ${Date.now() - started_stamp}ms`);
         return;
       }
       token = g_token(Math.random() >= 0.5 ? 1 : 2);
