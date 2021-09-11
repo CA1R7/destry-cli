@@ -1,0 +1,34 @@
+name: "handler checks"
+
+on:
+  push:
+    paths:
+      - ".github/workflows/check-app.yml"
+      - "src/**"
+  pull_request:
+    paths:
+      - ".github/workflows/check-app.yml"
+      - "src/**"
+
+jobs:
+  Handler-Check:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: "Install workspace dependencies"
+        run: |
+          yarn
+      - name: "checking script in src directory"
+        run: |
+          yarn lint
+        env:
+          CI: true

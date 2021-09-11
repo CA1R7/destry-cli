@@ -1,0 +1,41 @@
+{
+  "name": "destry-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "start": "node dist",
+    "dev": "yarn build && yarn start",
+    "lint": "eslint src --ext .ts,.json",
+    "lint:fix": "yarn lint --fix",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CA1R7/destry-cli.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CA1R7/destry-cli/issues"
+  },
+  "homepage": "https://github.com/CA1R7/destry-cli#readme",
+  "dependencies": {
+    "inquirer": "^8.1.2",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^8.1.1",
+    "@types/node": "^16.9.1",
+    "@types/request": "^2.48.7",
+    "@typescript-eslint/eslint-plugin": "^4.31.0",
+    "@typescript-eslint/parser": "^4.31.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.4.0",
+    "typescript": "^4.4.3"
+  }
+}
