@@ -23,6 +23,7 @@
     "discord-checker"
   ],
   "author": "cairbyte71",
+  "private": true,
   "license": "Apache license 2.0",
   "bugs": {
     "url": "https://github.com/CA1R7/destry-cli/issues"
