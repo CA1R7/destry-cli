@@ -7,6 +7,7 @@ export type ProxiesProtocols = "http" | "https" | "socks4" | "socks5";
 export interface OptionsType {
   protocol: ProxiesProtocols;
   version: number;
+  proxiesQs: "yes" | "no";
   max_checks: number;
   delay_time: number;
 }
@@ -24,6 +25,15 @@ export const PreviewStartQuestions = (): Promise<OptionsType> => {
     (async () => {
       try {
         const OptionsResult = await inquirer.prompt([
+          {
+            type: "list",
+            name: "proxiesQs",
+            message: "Do you wanna use the proxies ?",
+            choices: ["yes", "no"],
+            default() {
+              return "no";
+            },
+          },
           {
             type: "list",
             name: "protocol",

