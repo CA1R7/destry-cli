@@ -1,7 +1,7 @@
 {
   "name": "destry-cli",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "An advanced discord token generator",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node dist",
@@ -15,9 +15,15 @@
     "type": "git",
     "url": "git+https://github.com/CA1R7/destry-cli.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "discord",
+    "discord-token",
+    "token-generator",
+    "discord-token-grabber",
+    "discord-checker"
+  ],
+  "author": "cairbyte71",
+  "license": "Apache license 2.0",
   "bugs": {
     "url": "https://github.com/CA1R7/destry-cli/issues"
   },
