@@ -1,6 +1,6 @@
 # Destry
 
-An advanced discord token generator only on terminal.
+An advanced discord token generator (not official destry).
 
 ### IMPORTANT
 You should find a good proxies if you wanna use the proxies.
