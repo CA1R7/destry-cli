@@ -121,7 +121,7 @@ export class Updater {
         .promise()
         .then(async () => {
           if (!existsSync((this.tempFolder = join(this.tempFolder, "./destry-cli-main/src")))) {
-            throw new Error("Something went wrong while extract zip file of downloading it.");
+            throw new Error("Something went wrong while extracting update zip file.");
           }
           const startProcess = spawn(join(__dirname, "../../shells/updater_cli.bat"), [], {
             cwd: join(__dirname, "../../src"),
