@@ -1,6 +1,6 @@
 {
   "name": "destry-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An advanced discord token generator",
   "main": "./dist/index.js",
   "scripts": {
@@ -44,5 +44,6 @@
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.4.0",
     "typescript": "^4.4.3"
-  }
+  },
+  "zipFile": "C:\\Users\\CAIRBY~1\\AppData\\Local\\Temp\\destry_cli\\version_1.0.2.zip"
 }
