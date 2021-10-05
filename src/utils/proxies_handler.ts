@@ -1,6 +1,8 @@
 import { join } from "path";
 import { get } from "request";
-import { existsSync, writeFileSync, readFileSync } from "fs";
+import { existsSync } from "fs";
+import { FileHandler } from "./file_handler";
+import { Logger } from "./logger";
 
 export class ProxiesHandler {
   public proxies: string[];
@@ -18,7 +20,12 @@ export class ProxiesHandler {
           if (!existsSync(this.proxiesFilePath)) {
             throw new Error("Invalid proxies file path");
           }
-          const proxiesFileContent: string = readFileSync(this.proxiesFilePath, "utf-8");
+          const proxiesFileContent: string | null = FileHandler.readFile<string>("proxies");
+
+          if (!proxiesFileContent) {
+            throw new Error("An error occurred while reading proxies file.");
+          }
+
           const tempProxiesFile: string[] = proxiesFileContent.split("\n");
 
           for (let i = 0; i < tempProxiesFile.length; i++) {
@@ -35,7 +42,7 @@ export class ProxiesHandler {
         } catch (e) {
           // if things wrong will use a default proxies.
           await this.setDefaultProxies(this.proxiesFilePath);
-          console.error(e);
+          Logger.error(String(e));
           resolve(this);
         }
       })();
@@ -60,7 +67,11 @@ export class ProxiesHandler {
               content?: string[];
             }
             const proxiesObject: ResponseProxiesType = JSON.parse(body);
-            if (!("status" in proxiesObject) || !proxiesObject.status || !Array.isArray(proxiesObject.content)) {
+            if (
+              !("status" in proxiesObject) ||
+              !proxiesObject.status ||
+              !Array.isArray(proxiesObject.content)
+            ) {
               return reject("Wrong content");
             }
             return resolve(proxiesObject.content);
@@ -71,9 +82,9 @@ export class ProxiesHandler {
         throw new Error("Content is not an array object");
       }
       this.proxies = requestProxies;
-      writeFileSync(filename, requestProxies.join("\n"));
+      FileHandler.writeFile<string>(filename, requestProxies.join("\n"));
     } catch (e) {
-      console.error(e);
+      Logger.error(String(e));
       process.exit(1);
     }
   }
