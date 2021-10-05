@@ -4,9 +4,11 @@ import { join } from "path";
 import request from "request";
 import unzipper from "unzipper";
 import { spawn } from "child_process";
-import { createReadStream, createWriteStream, existsSync, mkdirSync, writeFileSync } from "fs";
+import { createReadStream, createWriteStream, existsSync, mkdirSync } from "fs";
 import { platform } from "process";
 import { IncomingMessage } from "http";
+import { Logger } from "./logger";
+import { FileHandler } from "./file_handler";
 
 interface PackageFileType {
   name: string;
@@ -32,9 +34,10 @@ export class Updater {
     this.init();
     const fetchUpdatesDetails = await new Promise<undefined | boolean>((resolve) => {
       if (platform !== "win32") {
+        // Updating system for win32 only.
         return resolve(false);
       }
-      console.log(`[\x1b[33mUPDATER\x1b[0m] Checking for updates ...`);
+      Logger.warn(`Checking for updates ...`);
       request.get(
         this.pkgFile,
         {
@@ -48,14 +51,18 @@ export class Updater {
               throw new Error("Invalid updates details content.");
             }
             const details: PackageFileType = JSON.parse(body);
-            const currentVersion: PackageFileType = await import(join(__dirname, "../../package.json"));
-            if (currentVersion.version !== details.version) {
+            const currentVersion: PackageFileType | null = FileHandler.readFile<PackageFileType>(
+              join(__dirname, "../../package.json"),
+              true,
+            );
+
+            if (currentVersion && currentVersion.version !== details.version) {
               this.downloadUpdate(details);
             } else {
               return resolve(false);
             }
           } catch (e) {
-            console.log(`[\x1b[31mUPDATER_ERROR\x1b[0m]: ${String(e)}`);
+            Logger.error(String(e));
             return resolve(false);
           }
         },
@@ -80,6 +87,7 @@ export class Updater {
               outStream.write(chunk);
               downloaded += chunk.length;
               percent = Number(((100 * downloaded) / len).toFixed(2));
+              // simple animation for downloading
               if (slash === "/") {
                 slash = "-";
               } else if (slash === "-") {
@@ -109,13 +117,14 @@ export class Updater {
           throw new Error(String(e));
         });
     } catch (e) {
-      console.log(`[\x1b[31mUPDATER_ERROR\x1b[0m]: ${String(e)}`);
+      Logger.error(String(e));
     }
   }
   public async installUpdate(details: PackageFileType & { zipFile: string }): Promise<void> {
-    console.log(`[\x1b[32mUPDATER\x1b[0m] Installing update v${details.version} ...`);
+    // install update by running updater batch file for latest copy.
+    Logger.info(`Installing update v${details.version} ...`);
     try {
-      writeFileSync(join(__dirname, "../../package.json"), JSON.stringify(details, null, 2));
+      FileHandler.writeFile<typeof details>(join(__dirname, "../../package.json"), details, true);
       createReadStream(details.zipFile)
         .pipe(unzipper.Extract({ path: this.tempFolder }))
         .promise()
@@ -133,11 +142,11 @@ export class Updater {
             console.error(data.toString());
           });
           startProcess.on("close", (code: number) => {
-            console.log(`child process exited with code ${code}`);
+            Logger.warn(`child process exited with code ${code}`);
           });
         });
     } catch (e) {
-      console.log(`[\x1b[31mUPDATER_ERROR\x1b[0m]: ${String(e)}`);
+      Logger.error(String(e));
     }
   }
 }
