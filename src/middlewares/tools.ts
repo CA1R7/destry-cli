@@ -52,7 +52,6 @@ export const ToolStartManager = ({ options, proxieshandler }: ToolManagerType): 
             }
             const l = JSON.parse(body);
             if (l.code !== 0x0) {
-              console.log(l);
               Logger.info(`valid token [${token}]`);
               FileHandler.writeFile<string>(
                 join(__dirname, `../../result/token-${Date.now()}.txt`),
